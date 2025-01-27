@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:analise_camera_app/UI/Widgets/description_widget.dart';
+import 'package:analise_camera_app/UI/Widgets/drawer_widget.dart';
 import 'package:analise_camera_app/view_model.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -7,10 +9,7 @@ import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart
 import 'package:provider/provider.dart';
 
 class ImageView extends StatefulWidget {
-  const ImageView(
-      {super.key,
-      required this.image,
-      required this.imageIndex});
+  const ImageView({super.key, required this.image, required this.imageIndex});
 
   final XFile image;
   final int imageIndex;
@@ -22,7 +21,7 @@ class _ImageViewState extends State<ImageView> {
   final TextRecognizer _textRecognizer = TextRecognizer();
   var _textoExtraido = '';
 
-  Future<String> _extracTextFormImage(XFile? image) async {
+  Future<void> _extracTextFormImage(XFile? image) async {
     if (image != null) {
       final inputImage = InputImage.fromFilePath(image.path);
       final RecognizedText recognizedText =
@@ -30,49 +29,51 @@ class _ImageViewState extends State<ImageView> {
       setState(() {
         _textoExtraido = recognizedText.text;
       });
-      return recognizedText.text;
+      
     } else {
       setState(() {
         _textoExtraido = 'Imagem invaldia';
       });
-      return 'Imagem invalida';
+      
     }
   }
 
   @override
-  void dispose() { 
+  void dispose() {
     _textRecognizer.close();
     super.dispose();
-    
   }
-
 
   @override
   Widget build(BuildContext context) {
     var mainNotifier = context.watch<MainNotifier>();
-    return Column(
-      children: [
-        Container(
-          child: Image.file(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Imagem '),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await _extracTextFormImage(widget.image);
+              showModalBottomSheet(
+                context: context,
+                builder: (context) =>
+                    DescriptionWidget(extratedText: _textoExtraido, image: widget.image,),
+              );
+            },
+
+            icon: Icon(Icons.more_vert_sharp),
+          ),
+        ],
+      ),
+      drawer: DrawerWidget(),
+      body: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Image.file(
             File(widget.image.path),
           ),
-        ),
-        Container(
-          child: FutureBuilder(
-            future:
-                _extracTextFormImage(mainNotifier.imagens[widget.imageIndex]),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return Text(snapshot.data!);
-              } else if( snapshot.connectionState == ConnectionState.active) {
-                return LinearProgressIndicator();
-              }else{
-                return CircularProgressIndicator();
-              }
-            },
-          ),
-        )
-      ],
+        ],
+      ),
     );
   }
 }

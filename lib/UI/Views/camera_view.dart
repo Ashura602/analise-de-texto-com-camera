@@ -42,7 +42,7 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
       appBar: AppBar(
         title: const Text('Take a picture'),
       ),
-      drawer: DrawerWidget(camera: widget.camera),
+      drawer: DrawerWidget(),
       body: FutureBuilder(
         future: _initControllerFuture,
         builder: (context, snapshot) {

@@ -1,40 +1,41 @@
 import 'package:analise_camera_app/UI/Views/camera_view.dart';
 import 'package:analise_camera_app/UI/Views/gallery_view.dart';
-import 'package:camera/camera.dart';
+import 'package:analise_camera_app/view_model.dart';
 import 'package:flutter/material.dart';
 
-
+import 'package:provider/provider.dart';
 
 class DrawerWidget extends StatefulWidget {
-  const DrawerWidget({super.key, required this.camera});
-
-  final CameraDescription camera;
+  const DrawerWidget({super.key});
   @override
   State<DrawerWidget> createState() => _DrawerWidgetState();
 }
 
 class _DrawerWidgetState extends State<DrawerWidget> {
-
-
   @override
-  Widget build(BuildContext context) { 
+  Widget build(BuildContext context) {
+    var mainProvider = context.watch<MainNotifier>();
     return Drawer(
-        child: Column(
-          children: [
-            ListTile(
+      child: Column(
+        children: [
+          ListTile(
               title: Text('Camera'),
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => TakePictureScreen(camera: widget.camera),
-              )),
-            ),
-            ListTile(
-              title: Text('Galeria'),
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => DisplayPictureScreen(),
-              )),
-            )
-          ],
-        ),
-      );
+              onTap: () async {
+                final camera = await mainProvider.getCamera();
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => TakePictureScreen(
+                    camera: camera,
+                  ),
+                ));
+              }),
+          ListTile(
+            title: Text('Galeria'),
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => DisplayPictureScreen(),
+            )),
+          )
+        ],
+      ),
+    );
   }
 }

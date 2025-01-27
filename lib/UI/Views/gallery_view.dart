@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DisplayPictureScreen extends StatefulWidget {
-  DisplayPictureScreen({super.key});
+  const DisplayPictureScreen({super.key});
 
   @override
   State<DisplayPictureScreen> createState() => _DisplayPictureScreenState();
