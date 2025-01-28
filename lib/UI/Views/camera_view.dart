@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:analise_camera_app/UI/Widgets/drawer_widget.dart';
 import 'package:analise_camera_app/view_model.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class TakePictureScreen extends StatefulWidget {
@@ -16,6 +19,19 @@ class TakePictureScreen extends StatefulWidget {
 class _TakePictureScreenState extends State<TakePictureScreen> {
   late CameraController _controller;
   late Future<void> _initControllerFuture;
+  late XFile image;
+
+  Future<XFile?> _pickImage() async {
+  final picker = ImagePicker();
+  final pickedFile = await picker.pickImage(source: ImageSource.camera);
+
+  if (pickedFile != null) {
+    return pickedFile;
+  } else {
+    print('No image selected.');
+    return null;
+  }
+}
 
   @override
   void initState() {
@@ -58,9 +74,10 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           try {
-            await _initControllerFuture;
-            final image = await _controller.takePicture();
-            mainNotifier.addImage(image);
+            final pickedImage = await _pickImage();
+            // await _initControllerFuture;
+            // final image = await _controller.takePicture();
+            mainNotifier.addImage(pickedImage!);
 
             if (!context.mounted) return;
           } catch (e) {

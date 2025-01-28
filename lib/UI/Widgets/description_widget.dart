@@ -2,10 +2,10 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 class DescriptionWidget extends StatefulWidget {
-  DescriptionWidget({super.key, required this.extratedText, required this.image});
+  const DescriptionWidget({super.key, required this.extratedText, required this.image});
 
-  final extratedText;
-  XFile image;
+  final String extratedText;
+  final XFile image;
 
   @override
   State<DescriptionWidget> createState() => _DescriptionWidgetState();
@@ -14,7 +14,7 @@ class DescriptionWidget extends StatefulWidget {
 class _DescriptionWidgetState extends State<DescriptionWidget> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height * 0.5,
       child: SingleChildScrollView(

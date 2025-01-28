@@ -32,7 +32,6 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
           return GestureDetector(
             onTap: () {
             
-
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => ImageView(
                   image: mainNotifier.imagens[index],

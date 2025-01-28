@@ -2,11 +2,9 @@ import 'dart:io';
 
 import 'package:analise_camera_app/UI/Widgets/description_widget.dart';
 import 'package:analise_camera_app/UI/Widgets/drawer_widget.dart';
-import 'package:analise_camera_app/view_model.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
-import 'package:provider/provider.dart';
 
 class ImageView extends StatefulWidget {
   const ImageView({super.key, required this.image, required this.imageIndex});
@@ -29,12 +27,10 @@ class _ImageViewState extends State<ImageView> {
       setState(() {
         _textoExtraido = recognizedText.text;
       });
-      
     } else {
       setState(() {
         _textoExtraido = 'Imagem invaldia';
       });
-      
     }
   }
 
@@ -46,7 +42,6 @@ class _ImageViewState extends State<ImageView> {
 
   @override
   Widget build(BuildContext context) {
-    var mainNotifier = context.watch<MainNotifier>();
     return Scaffold(
       appBar: AppBar(
         title: Text('Imagem '),
@@ -56,23 +51,20 @@ class _ImageViewState extends State<ImageView> {
               await _extracTextFormImage(widget.image);
               showModalBottomSheet(
                 context: context,
-                builder: (context) =>
-                    DescriptionWidget(extratedText: _textoExtraido, image: widget.image,),
+                builder: (context) => DescriptionWidget(
+                  extratedText: _textoExtraido,
+                  image: widget.image,
+                ),
               );
             },
-
             icon: Icon(Icons.more_vert_sharp),
           ),
         ],
       ),
       drawer: DrawerWidget(),
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Image.file(
-            File(widget.image.path),
-          ),
-        ],
+      body: Image.file(
+        File(widget.image.path),
+        height: MediaQuery.of(context).size.height,
       ),
     );
   }
